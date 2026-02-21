@@ -59,7 +59,7 @@ public class SltBraceHighlighter implements ProjectActivity {
     private static final Key<List<RangeHighlighter>> BRACE_HIGHLIGHTERS_IN_EDITOR_VIEW_KEY = Key.create("BraceHighlighter.BRACE_HIGHLIGHTERS_IN_EDITOR_VIEW_KEY");
     private static final Key<RangeHighlighter> LINE_MARKER_IN_EDITOR_KEY = Key.create("BraceHighlighter.LINE_MARKER_IN_EDITOR_KEY");
 
-    private final Alarm alarm = new Alarm();
+    private Alarm alarm;
 
     @Nullable
     @Override
@@ -70,6 +70,7 @@ public class SltBraceHighlighter implements ProjectActivity {
         }
 
         Disposable activityDisposable = SltProjectService.getInstance(project);
+        alarm = new Alarm(activityDisposable);
         registerListeners(project, activityDisposable);
         return null;
     }
@@ -99,7 +100,7 @@ public class SltBraceHighlighter implements ProjectActivity {
         SelectionListener selectionListener = new SelectionListener() {
             @Override
             public void selectionChanged(@NotNull SelectionEvent e) {
-                alarm.cancelAllRequests();
+                if (alarm != null) alarm.cancelAllRequests();
                 Editor editor = e.getEditor();
                 if (editor.getProject() != project) {
                     return;
@@ -121,7 +122,7 @@ public class SltBraceHighlighter implements ProjectActivity {
         DocumentListener documentListener = new DocumentListener() {
             @Override
             public void documentChanged(@NotNull DocumentEvent e) {
-                alarm.cancelAllRequests();
+                if (alarm != null) alarm.cancelAllRequests();
                 EditorFactory.getInstance().editors(e.getDocument(), project).forEach(editor -> updateHighlighted(project, editor));
             }
         };
@@ -131,7 +132,7 @@ public class SltBraceHighlighter implements ProjectActivity {
                 .subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, new FileEditorManagerListener() {
                     @Override
                     public void selectionChanged(@NotNull FileEditorManagerEvent e) {
-                        alarm.cancelAllRequests();
+                        if (alarm != null) alarm.cancelAllRequests();
                         FileEditor oldEditor = e.getOldEditor();
                         if (oldEditor instanceof TextEditor) {
                             clearBraces(((TextEditor) oldEditor).getEditor());
@@ -188,7 +189,7 @@ public class SltBraceHighlighter implements ProjectActivity {
         int offset = editor.getCaretModel().getOffset();
         CharSequence chars = editor.getDocument().getCharsSequence();
 
-        alarm.cancelAllRequests();
+        if (alarm != null) alarm.cancelAllRequests();
         BraceHighlightingAndNavigationContext context = computeHighlightingAndNavigationContext(editor, psiFile, offset);
 
         if (context != null) {
@@ -327,7 +328,7 @@ public class SltBraceHighlighter implements ProjectActivity {
     }
 
     private void onCaretUpdate(Editor editor, Project project) {
-        alarm.cancelAllRequests();
+        if (alarm != null) alarm.cancelAllRequests();
         SelectionModel selectionModel = editor.getSelectionModel();
         if (editor.getProject() != project || selectionModel.hasSelection()) {
             return;
