@@ -95,6 +95,6 @@ public class SltDocumentationProvider extends AbstractDocumentationProvider {
 
 
     private String escape(String s) {
-        return EscapeUtils.escapeHtml4(s);
+        return s == null ? null : EscapeUtils.escapeHtml4(s);
     }
 }
