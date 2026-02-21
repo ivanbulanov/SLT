@@ -110,9 +110,6 @@
 
         <xdebugger.breakpointType implementation="com.en_circle.slt.plugin.ui.debug.SltSymbolBreakpointType"/>
 
-        <spellchecker.support language="Common Lisp"
-                              implementationClass="com.en_circle.slt.plugin.SltSpellCheckingStrategy"/>
-
         <lang.foldingBuilder language="Common Lisp"
                              implementationClass="com.en_circle.slt.plugin.SltFoldingBuilder"/>
 

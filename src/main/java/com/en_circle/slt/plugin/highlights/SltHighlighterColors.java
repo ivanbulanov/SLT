@@ -30,7 +30,7 @@ public class SltHighlighterColors {
         holder.newSilentAnnotation(HighlightSeverity.INFORMATION)
                 .range(element)
                 .textAttributes(key)
-                .needsUpdateOnTyping(false)
+
                 .create();
     }
 
@@ -38,7 +38,7 @@ public class SltHighlighterColors {
         holder.newSilentAnnotation(HighlightSeverity.WEAK_WARNING)
                 .range(element)
                 .enforcedTextAttributes(EditorColorsManager.getInstance().getGlobalScheme().getAttributes(key))
-                .needsUpdateOnTyping(false)
+
                 .create();
     }
 
@@ -46,7 +46,7 @@ public class SltHighlighterColors {
         holder.newSilentAnnotation(HighlightSeverity.WEAK_WARNING)
                 .range(element)
                 .enforcedTextAttributes(textAttributes)
-                .needsUpdateOnTyping(false)
+
                 .create();
     }
 

@@ -1,6 +1,6 @@
 plugins {
     id("java")
-    id("org.jetbrains.intellij.platform") version "2.6.0"
+    id("org.jetbrains.intellij.platform") version "2.11.0"
     id("idea")
 }
 
@@ -23,8 +23,8 @@ repositories {
 
 dependencies {
     intellijPlatform {
-        intellijIdeaCommunity("2025.1")
-        // Add plugin dependencies here if needed
+        intellijIdea("2025.3.2")
+        // Spellchecker was removed from bundled plugins in 2025.3
     }
     implementation("org.awaitility:awaitility:4.2.0")
     implementation("org.watertemplate:watertemplate-engine:1.2.2")
@@ -81,13 +81,13 @@ tasks {
 
     // Set the JVM compatibility versions
     withType<JavaCompile> {
-        sourceCompatibility = "17"
-        targetCompatibility = "17"
+        sourceCompatibility = "21"
+        targetCompatibility = "21"
     }
 
     patchPluginXml {
-        sinceBuild.set("251")
-        untilBuild.set("252.*")
+        sinceBuild.set("253")
+        untilBuild.set("253.*")
     }
 
     signPlugin {

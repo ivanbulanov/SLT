@@ -67,7 +67,6 @@ public class SltHyperspecView implements Disposable {
             }
         });
         browser = new JBCefBrowser();
-        browser.getCefBrowser().getDevTools();
         client = browser.getJBCefClient();
         client.addLoadHandler(new CefLoadHandlerAdapter() {
             @Override
