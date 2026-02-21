@@ -20,6 +20,7 @@ import com.intellij.icons.AllIcons.Debugger;
 import com.intellij.openapi.Disposable;
 import com.intellij.openapi.actionSystem.*;
 import com.intellij.openapi.application.ApplicationManager;
+import com.intellij.openapi.application.ReadAction;
 import com.intellij.openapi.fileEditor.FileEditorManager;
 import com.intellij.openapi.fileEditor.OpenFileDescriptor;
 import com.intellij.openapi.project.Project;
@@ -409,18 +410,21 @@ public class SltDebuggerImpl implements SltDebugger, Disposable {
         }
         if (element.isFile()) {
             Project project = parent.getProject();
-            ProjectFileIndex index = ProjectFileIndex.getInstance(project);
             VirtualFile vf = LocalFileSystem.getInstance().findFileByIoFile(new File(element.getLocation()));
             if (vf != null) {
-                if (index.isInSource(vf)) {
-                    FileEditorManager.getInstance(project)
-                            .openTextEditor(new OpenFileDescriptor(project, vf,
-                                    element.getPosition() >= 0 ? element.getPosition() : -1), true);
-                } else {
-                    FileEditorManager.getInstance(project)
-                            .openEditor(new OpenFileDescriptor(project, vf,
-                                    element.getPosition() >= 0 ? element.getPosition() : -1), true);
-                }
+                int position = element.getPosition() >= 0 ? element.getPosition() : -1;
+                ApplicationManager.getApplication().executeOnPooledThread(() -> {
+                    boolean inSource = ReadAction.compute(() -> ProjectFileIndex.getInstance(project).isInSource(vf));
+                    ApplicationManager.getApplication().invokeLater(() -> {
+                        if (inSource) {
+                            FileEditorManager.getInstance(project)
+                                    .openTextEditor(new OpenFileDescriptor(project, vf, position), true);
+                        } else {
+                            FileEditorManager.getInstance(project)
+                                    .openEditor(new OpenFileDescriptor(project, vf, position), true);
+                        }
+                    });
+                });
             }
         }
         try {
