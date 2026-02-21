@@ -9,6 +9,7 @@ import com.en_circle.slt.plugin.lisp.psi.LispList;
 import com.en_circle.slt.plugin.lisp.psi.LispToplevel;
 import com.en_circle.slt.plugin.lisp.psi.LispTypes;
 import com.en_circle.slt.templates.Indentation;
+import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.*;
 import com.intellij.psi.util.PsiTreeUtil;
@@ -47,9 +48,11 @@ public class SltIndentationContainer {
 
     public void init(Project project) {
         String data = new Indentation().render();
-        PsiFileFactory factory = PsiFileFactory.getInstance(project);
-        PsiFile source = factory.createFileFromText("swank-reply.cl", SltCommonLispFileType.INSTANCE, data);
-        loadBaseIndentation(LispUtils.convertAst(source));
+        ApplicationManager.getApplication().runReadAction(() -> {
+            PsiFileFactory factory = PsiFileFactory.getInstance(project);
+            PsiFile source = factory.createFileFromText("swank-reply.cl", SltCommonLispFileType.INSTANCE, data);
+            loadBaseIndentation(LispUtils.convertAst(source));
+        });
     }
 
     public synchronized void update(LispContainer updates) {
