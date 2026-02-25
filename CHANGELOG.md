@@ -1,3 +1,14 @@
+## 0.5.5 260225
+
+### Changed
+- Updated for compatibility with IntelliJ IDEA 2025.3.2
+
+### Fixes
+- Fixed null documentation string in SltDocumentationProvider
+- Fixed Disposable parent for Alarm in SltBraceHighlighter
+- Fixed EDT threading: moved ProjectFileIndex.isInSource off EDT in SltDebuggerImpl
+- Fixed read action: wrapped PsiFileFactory.createFileFromText in read action in SltIndentationContainer
+
 ## 0.5.4 250624
 
 ### Changed
